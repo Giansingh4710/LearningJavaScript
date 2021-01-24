@@ -1,7 +1,9 @@
 
 document.getElementById("count").onclick= function(){
-    document.getElementById("confirm").innerHTML="Done";
-    document.getElementById("count").style.display= "none";
+    let a=document.getElementById("num").textContent;
+    a++;
+    document.getElementById("num").innerHTML=a;
+    //document.getElementById("count").style.display= "none";
 }
 
 
