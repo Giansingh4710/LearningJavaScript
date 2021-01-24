@@ -1,12 +1,12 @@
-let name=prompt("What is your Name? ")
-//document.getElementById("name").innerHTML="Hello "+name;
-switch(name){
-    case "Gian":
-        console.log("thats meee");
-        break;
-    default:
-        console.log("not mee");
-        break;
+let name=document.getElementById("name");
+for(let i=0;i<10;i++){
+    for(let j=i;j>-1;j--){
+        name.append(j+" ")
+    }
+    let br=document.createElement('br');
+    name.appendChild(br);
 }
+
+
 
 
