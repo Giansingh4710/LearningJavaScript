@@ -1,12 +1,7 @@
-let name=document.getElementById("name");
-let button=document.getElementById("count");
-for(let i=0;i<10;i++){
-    for(let j=i;j>-1;j--){
-        name.append(j+" ")
-    }
-    let br=document.createElement('br');
-    name.appendChild(br);
-}
+let nums=[11,32,334,44,55];
+/*for(let i=0;i<nums.length;i++){
+    console.log(nums[i]);
+}*/
 
 
 
