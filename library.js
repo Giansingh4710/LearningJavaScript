@@ -6,7 +6,7 @@ document.getElementById("click").onclick=function(){
     num++;
     let lst=document.createElement("ul");
     let book=prompt("What is the title?");
-    let author=prompt("Who authored "+book);
+    let author=prompt("Who authored "+book+"?");
     let finAdd=lst.innerHTML="<li>"+book+"</li>"+"<p>"+author+"</p>";
     let div=document.getElementById("add");
     div.appendChild(lst)
@@ -17,6 +17,3 @@ document.getElementById("click").onclick=function(){
     //lst.setAttribute('id','book'); gives created elem an id
 
 }
-
-
-

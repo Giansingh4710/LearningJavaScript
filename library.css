@@ -1,0 +1,15 @@
+body{
+    background-color:#303030;
+    color:white;
+    font-family:tahoma
+    }
+#empty{
+    font-style: italic;
+}
+
+#click{
+    background-color: 	#32CD32;
+    border-radius: 10%;
+    padding: 10px;
+    margin-top:20px;
+}
