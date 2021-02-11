@@ -7,7 +7,7 @@ document.getElementById("click").onclick=function(){
     let lst=document.createElement("ul");
     let book=prompt("What is the title?");
     let author=prompt("Who authored "+book+"?");
-    let finAdd=lst.innerHTML="<li>"+book+"</li>"+"<p>"+author+"</p>";
+    lst.innerHTML="<li>"+book+"</li>"+"<p>"+author+"</p>";
     let div=document.getElementById("add");
     div.appendChild(lst)
     console.log(div)
