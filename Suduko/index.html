@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Suduko</title>
     <style>
-      .grid {
+      #theGameGrid {
         /* border: 3px solid #000000; */
         /* display: inline; */
+        border-collapse: collapse;
       }
       .verticalSpace,
       .horizontalSpace {
@@ -26,7 +27,8 @@
   </head>
   <body>
     <h1>Play Suduko</h1>
-    <table class="grid" border="1" style="border-collapse: collapse">
+    <h2 id="loading">Loading....</h2>
+    <table id="theGameGrid" border="1">
       <div class="threeRows">
         <tr>
           <td class="cell" id="cell1"><input type="text" maxlength="1" /></td>
@@ -208,14 +210,142 @@
         <tr class="horizontalSpace"></tr>
       </div>
     </table>
+    <button onclick="solveAndShowBoard()">Show solved board</button>
+    <button onclick="generateRandomBoard()">New game</button>
   </body>
   <script>
-    const ALL_CELLS_VALUE = [];
-    for (let i = 1; i <= 81; i++) {
-      ALL_CELLS_VALUE[i - 1] = Math.floor(Math.random() * 10);
-      document.getElementById("cell" + i).lastChild.value =
-        ALL_CELLS_VALUE[i - 1];
+    const BOARD = [];
+    function generateRandomBoard() {
+      const theGameGrid = document.getElementById("theGameGrid");
+      const loading = document.getElementById("loading");
+      loading.style.display = "block";
+      theGameGrid.style.display = "none";
+
+      const clearBoard = () => {
+        for (let i = 0; i < 9; i++) {
+          BOARD[i] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        }
+      };
+      clearBoard();
+
+      //puts random numbers in cells
+      const cellsWithNums = 40;
+      for (let i = 0; i < cellsWithNums; i++) {
+        const indexToPut = Math.floor(Math.random() * 81);
+        const row = Math.floor(indexToPut / 9);
+        const col = indexToPut % 9;
+        const numToPut = Math.floor(Math.random() * 9) + 1;
+        if (validNum(numToPut, row, col, BOARD)) {
+          BOARD[row][col] = numToPut;
+        }
+      }
+
+      //solves the board
+      let a = solveBoard(BOARD);
+      //if board is solvable, the it will take away random spaces
+      //and show that board to be solved
+      console.log(a);
+      if (a) {
+        unsolveBoard(BOARD);
+        showUserBoard(BOARD);
+        theGameGrid.style.display = "block";
+        loading.style.display = "none";
+        return;
+      }
+      //if board not solvable, it will recurse till solveable
+      generateRandomBoard();
     }
-    console.log(ALL_CELLS_VALUE);
+
+    function showUserBoard(board) {
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          cellNum = "cell" + (i * 9 + j + 1);
+          if (board[i][j] !== 0) {
+            document.getElementById(cellNum).lastChild.value = board[i][j];
+            document.getElementById(cellNum).lastChild.disabled = true;
+          } else {
+            document.getElementById(cellNum).lastChild.disabled = false;
+            document.getElementById(cellNum).lastChild.value = "";
+          }
+        }
+      }
+    }
+
+    const validNum = (testNum, row, col, brd) => {
+      const inRowAndCol = (testNum, row, col, brd) => {
+        if (brd[row].includes(testNum)) {
+          return true;
+        }
+        for (let i = 0; i < 9; i++) {
+          if (brd[i][col] === testNum) {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      const inBox = (testNum, row, col, brd) => {
+        const topRightOfBox = [row - (row % 3), col - (col % 3)];
+        const x = topRightOfBox[0];
+        const y = topRightOfBox[1];
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (testNum === brd[x + i][y + j]) {
+              return true;
+            }
+          }
+        }
+        return false;
+      };
+
+      if (!inRowAndCol(testNum, row, col, brd)) {
+        if (!inBox(testNum, row, col, brd)) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    function solveBoard(board) {
+      const solvable = (brd) => {
+        for (let i = 0; i < 9; i++) {
+          for (let j = 0; j < 9; j++) {
+            if (brd[i][j] === 0) {
+              for (let testNum = 1; testNum <= 9; testNum++) {
+                if (validNum(testNum, i, j, brd)) {
+                  brd[i][j] = testNum;
+                  if (!solvable(brd)) {
+                    brd[i][j] = 0;
+                  } else {
+                    return true;
+                  }
+                }
+              }
+              return false;
+            }
+          }
+        }
+        return true;
+      };
+
+      return solvable(board);
+    }
+
+    function unsolveBoard(board) {
+      const blankSpaces = 40;
+      for (let i = 0; i < blankSpaces; i++) {
+        const indexToPut = Math.floor(Math.random() * 81);
+        const row = Math.floor(indexToPut / 9);
+        const col = indexToPut % 9;
+        board[row][col] = 0;
+      }
+    }
+
+    function solveAndShowBoard() {
+      solveBoard(BOARD);
+      showUserBoard(BOARD);
+    }
+
+    generateRandomBoard();
   </script>
 </html>

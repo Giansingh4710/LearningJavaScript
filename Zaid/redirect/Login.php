@@ -1,3 +1,35 @@
+<?php
+
+  $servername = "sql1.njit.edu";
+  $username = "zma4";
+  $password = "Z_viper908";
+  $dbname = "zma4";
+  $con = mysqli_connect($servername, $username, $password, $dbname);
+
+  if (mysqli_connect_errno())
+{
+echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+  $fName = $_POST["firstName"];
+  echo $fName;
+  $lName = $_POST['lastName'];
+  $pass = $_POST['password'];
+  $id = $_POST['idNum'];
+
+  $sql = "SELECT * FROM `it3` WHERE `Stylist First Name`='$fName' and `Stylist Last Name`='$lName' and `Stylist Password`='$pass' and `Stylist ID Number`='$id'";
+  $result = $con->query($sql);
+
+  $verified = false;
+
+  if (mysqli_num_rows($result) > 0) {
+
+    $verified = false;
+
+  }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -21,17 +53,17 @@
       }
     </style>
   </head>
+
   <body>
     <div class="box">
       <div class="heading">
         <h1>The Art Of Hair</h1>
       </div>
       <div class="data" style="color: blue; font-weight: bold">
-        <form onsubmit="checkValid(event)">
+        <form onsubmit="checkValid(event)" method="POST">
           <div>
             <label for="firstName">Stylist's First Name: </label>
             <input
-              required
               placeholder="Example: John"
               id="firstName"
               name="firstName"
@@ -42,7 +74,6 @@
           <div>
             <label for="lastName">Stylist's Last Name: </label>
             <input
-              required
               placeholder="Example: Chris"
               id="lastName"
               name="lastName"
@@ -53,46 +84,42 @@
           <div>
             <label for="password">Stylist's Password: </label>
             <input
-              required
               placeholder="Example: Stylist!1"
               id="password"
               name="password"
-              type="password"
+              type="text"
             />
             Required
           </div>
           <div>
             <label for="idNum">Stylist's ID #: </label>
             <input
-              required
               placeholder="Example: 12345678"
               id="idNum"
               name="idNum"
-              type="number"
+              type="text"
             />
             Required
           </div>
           <div>
             <label for="phoneNum">Stylist's Phone #: </label>
             <input
-              required
               placeholder="Example: 555-555-5555"
               id="phoneNum"
               name="phoneNum"
-              type="tel"
+              type="text"
             />
             Required
           </div>
           <div>
             <label for="email">Stylist's Email: </label>
             <input
-              required
               placeholder="Example: abc@abc.com"
               id="email"
               name="email"
-              type="email"
+              type="text"
             />
-            Required
+            Only Required for Email Confirmation
           </div>
           <div>
             <input id="conf" name="conf" type="checkbox" />
@@ -133,70 +160,56 @@
       function checkValid(event) {
         event.preventDefault();
 
-        const Stylists = [
-          {
-            firstName: "Bob",
-            lastName: "Jones",
-            password: "Bob1!",
-            id: "12345678",
-          },
-          {
-            firstName: "John",
-            lastName: "Chris",
-            password: "John1!",
-            id: "87654321",
-          },
-        ];
+        //verification
 
+        //declaration
         const firstName = document.getElementById("firstName").value;
         const lastName = document.getElementById("lastName").value;
         const password = document.getElementById("password").value;
         const idNum = document.getElementById("idNum").value;
         const phoneNum = document.getElementById("phoneNum").value;
         const email = document.getElementById("email").value;
+        const emailCheck = document.getElementById("conf").checked;
 
         let transaction = document.getElementById("transaction");
         transaction = transaction.options[transaction.selectedIndex].value;
 
-        // console.log(firstName, lastName, password, idNum, phoneNum, email);
-
+        //validation
+        const namePatternInvalid = /^[0-9]*$/;
         const passPattern =
-          /(^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{3,10}$)/;
+          /(^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,10}$)/;
         const idPattern = /^[0-9]{8}$/;
-        const phonePattern =
-          /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+        const phonePattern = /^\(?([0-9]{3})\)*[- ]([0-9]{3})*[- ]([0-9]{4})$/;
         const emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
+        const regexFirstName = firstName.match(namePatternInvalid);
+        const regexLastName = lastName.match(namePatternInvalid);
         const regexPass = password.match(passPattern);
         const regexId = idNum.match(idPattern);
         const regexPhone = phoneNum.match(phonePattern);
         const regexEmail = email.match(emailPattern);
-        if (!regexPass) {
-          alert("Pleas enter valid Password!!");
-        } else if (!regexId) {
-          alert("Pleas enter valid Id!!");
-        } else if (!regexPhone) {
-          alert("Pleas enter valid Phone Number!!");
-        } else if (!regexEmail) {
-          alert("Pleas enter valid Email!!");
+
+        if (
+          firstName == "" ||
+          lastName == "" ||
+          password == "" ||
+          idNum == "" ||
+          phoneNum == ""
+        ) {
+          alert("Fill out the required information!");
         } else {
-          let inArr = false;
-          for (let i = 0; i < Stylists.length; i++) {
-            if (
-              Stylists[i].firstName.toLowerCase() === firstName.toLowerCase() &&
-              Stylists[i].lastName.toLowerCase() === lastName.toLowerCase() &&
-              Stylists[i].password === password &&
-              Stylists[i].id === idNum
-            ) {
-              inArr = true;
+          var verified;
+          // let test=X
+          // need to get value of verified from Database.php
+
+          // if (verified) 
+            <?php if ($verified): ?>
+              alert("Verified");
+            <?php else: ?>
               alert(
-                `You have logged in Succesfully!!\n${firstName}\n ${lastName}\n${transaction}`
+                "You have passed the validation, but your information was not succesfully verified. Please retry!"
               );
-              break;
-            }
-          }
-          if (!inArr) {
-            alert("Your info is incorrect");
+            <?php endif; ?>
           }
         }
       }
